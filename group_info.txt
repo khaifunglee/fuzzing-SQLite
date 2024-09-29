@@ -1,21 +1,21 @@
-Group Number:
+Group Number: 44
 
 Member-1:
-- Name:
-- Student ID:
-- Email:
+- Name: Ruiqi Yu
+- Student ID: 1060947
+- Email: ruyu@student.unimelb.edu.au
 
 Member-2:
-- Name:
-- Student ID:
-- Email:
+- Name: Khai Fung Lee
+- Student ID: 1242579
+- Email: khaifungl@student.unimelb.edu.au
 
 Member-3:
-- Name:
-- Student ID:
-- Email:
+- Name: Nianran Pan
+- Student ID: 1445506
+- Email: nianranp@student.unimelb.edu.au 
 
 Member-4:
-- Name:
-- Student ID:
-- Email:
+- Name: Lingrui Liang
+- Student ID: 1522316
+- Email: lingliang@student.unimelb.edu.au
