@@ -1,0 +1,19 @@
+CREATE TABLE employees (emp_id INTEGER PRIMARY KEY, emp_name TEXT, department TEXT, salary INTEGER);
+CREATE TABLE departments (dept_id INTEGER PRIMARY KEY, dept_name TEXT, location TEXT);
+CREATE TABLE projects (proj_id INTEGER PRIMARY KEY, proj_name TEXT, budget INTEGER);
+
+INSERT INTO employees (emp_name, department, salary) VALUES 
+('John Doe', 'IT', 50000), 
+('Jane Smith', 'HR', 60000), 
+('Samuel Johnson', 'Finance', 70000);
+
+INSERT INTO departments (dept_name, location) VALUES ('IT', 'New York'), ('HR', 'San Francisco'), ('Finance', 'Chicago');
+INSERT INTO projects (proj_name, budget) VALUES ('Project A', 100000), ('Project B', 200000);
+
+SELECT d.dept_name, COUNT(e.emp_id) AS num_employees, MAX(e.salary) AS highest_salary, SUM(p.budget) AS total_budget
+FROM departments d
+LEFT JOIN employees e ON d.dept_name = e.department
+LEFT JOIN projects p ON d.dept_name = p.proj_name
+GROUP BY d.dept_name
+HAVING SUM(p.budget) > 100000 OR MAX(e.salary) > 60000
+ORDER BY total_budget DESC;

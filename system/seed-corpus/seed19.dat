@@ -1,0 +1,10 @@
+CREATE TABLE test_abs (id INTEGER PRIMARY KEY, value1 INTEGER, value2 REAL);
+INSERT INTO test_abs (value1, value2) VALUES (-10, 20.5), (15, -30.7), (-100, 5.5);
+
+SELECT ABS(value1), ABS(value2) FROM test_abs WHERE ABS(value1) > 10 OR ABS(value2) < 10;
+SELECT ABS(value1 + value2) FROM test_abs GROUP BY ABS(value1) HAVING ABS(value2) > 20 ORDER BY ABS(value1) DESC;
+
+
+SELECT id, value1, value2, ABS(value1 - value2) AS abs_difference
+FROM test_abs
+WHERE ABS(value1) > 10 AND ABS(value2) < 20;

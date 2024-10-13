@@ -1,0 +1,6 @@
+CREATE TABLE test_access (id INTEGER PRIMARY KEY, data TEXT, value BLOB);
+INSERT INTO test_access (data, value) VALUES ('data1', randomblob(16)), ('data2', zeroblob(20)), ('data3', hex(randomblob(8)));
+
+SELECT id, data, LENGTH(value) AS blob_length FROM test_access WHERE LENGTH(data) > 4;
+SELECT * FROM test_access WHERE data LIKE 'data%' AND typeof(value) = 'blob';
+SELECT hex(value) AS hex_value FROM test_access WHERE LENGTH(value) > 10;

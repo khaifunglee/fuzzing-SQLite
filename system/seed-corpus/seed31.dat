@@ -1,0 +1,9 @@
+
+PRAGMA journal_mode = WAL;
+CREATE TABLE hash_test (id INTEGER PRIMARY KEY, content TEXT);
+INSERT INTO hash_test (content) VALUES ('A'), ('B'), ('C');
+
+
+SELECT * FROM hash_test WHERE content LIKE 'B%';
+PRAGMA wal_autocheckpoint = 5;
+PRAGMA wal_checkpoint(TRUNCATE);

@@ -1,0 +1,8 @@
+
+CREATE TABLE blob_test (id INTEGER PRIMARY KEY, data BLOB);
+INSERT INTO blob_test (data) VALUES (ZEROBLOB(16)), (ZEROBLOB(32)), (ZEROBLOB(64));
+
+
+SELECT id, LENGTH(data) AS blob_size FROM blob_test WHERE LENGTH(data) > 16;
+SELECT id, data FROM blob_test WHERE data = ZEROBLOB(32);
+SELECT id, HEX(data) AS hex_value FROM blob_test WHERE LENGTH(data) = 64;

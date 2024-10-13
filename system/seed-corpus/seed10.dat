@@ -1,0 +1,8 @@
+
+SELECT emp_name, salary,
+(SELECT AVG(salary) FROM employees WHERE department = e.department) AS department_avg_salary,
+(SELECT MAX(salary) FROM employees) AS company_max_salary,
+salary - (SELECT AVG(salary) FROM employees) AS salary_difference
+FROM employees e
+WHERE salary > (SELECT AVG(salary) FROM employees)
+ORDER BY salary_difference DESC;

@@ -1,0 +1,21 @@
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    customer_name TEXT,
+    email TEXT,
+    phone_number TEXT
+);
+
+INSERT INTO customers (customer_name, email, phone_number) VALUES
+('Alice Johnson', 'alice@example.com', '123-456-7890'),
+('Bob Smith', 'bob@example.com', '(987) 654-3210'),
+('Charlie Brown', 'charlie123@abc.com', '+1-234-567-8901');
+
+SELECT customer_name, email, phone_number
+FROM customers
+WHERE email LIKE '%@example.com'
+   OR phone_number ~ '^\+\d{1,2}-\d{3}-\d{3}-\d{4}$';
+
+SELECT customer_name, phone_number
+FROM customers
+WHERE phone_number NOT SIMILAR TO '(\d{3}) \d{3}-\d{4}'
+   AND phone_number NOT SIMILAR TO '\+\d-\d{3}-\d{3}-\d{4}';

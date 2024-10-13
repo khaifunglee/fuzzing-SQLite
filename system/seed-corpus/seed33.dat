@@ -1,0 +1,8 @@
+
+CREATE TABLE collate_test (id INTEGER PRIMARY KEY, name TEXT COLLATE NOCASE);
+INSERT INTO collate_test (name) VALUES ('abc'), ('ABC'), ('def'), ('DEF');
+
+
+SELECT * FROM collate_test WHERE name COLLATE NOCASE = 'ABC';
+SELECT name FROM collate_test ORDER BY name COLLATE NOCASE;
+SELECT name FROM collate_test WHERE name COLLATE BINARY != name COLLATE NOCASE;

@@ -1,0 +1,17 @@
+WITH RECURSIVE EmployeeHierarchy AS (
+    SELECT emp_id, emp_name, department, salary, 1 AS level
+    FROM employees
+    WHERE department = 'IT'
+    UNION ALL
+    SELECT e.emp_id, e.emp_name, e.department, e.salary, eh.level + 1
+    FROM employees e
+    JOIN EmployeeHierarchy eh ON e.department = 'HR'
+)
+SELECT emp_id, emp_name, department, level,
+CASE 
+    WHEN salary > 100000 THEN 'Executive'
+    WHEN salary BETWEEN 70000 AND 100000 THEN 'Manager'
+    ELSE 'Staff'
+END AS position_level
+FROM EmployeeHierarchy
+ORDER BY level, salary DESC;

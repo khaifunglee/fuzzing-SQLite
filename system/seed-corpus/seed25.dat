@@ -1,0 +1,6 @@
+CREATE TABLE collation_test (id INTEGER PRIMARY KEY, text1 TEXT COLLATE NOCASE, text2 TEXT COLLATE BINARY);
+INSERT INTO collation_test (text1, text2) VALUES ('abc', 'ABC'), ('def', 'DEF'), ('ghi', 'GHI');
+
+SELECT * FROM collation_test WHERE text1 = 'ABC';
+SELECT text1, text2 FROM collation_test ORDER BY text1 COLLATE NOCASE ASC;
+SELECT * FROM collation_test WHERE text1 COLLATE BINARY != text2 COLLATE NOCASE;
