@@ -1,11 +1,14 @@
 CC = gcc
-CFLAGS = -fprofile-arcs -ftest-coverage
+CFLAGS = -fprofile-arcs -ftest-coverage -g -01 # -g (debug flag) and -01 (optimization flag)
 LIBS = -lpthread -ldl -lm
 
-all: sqlite3
+# Add AddressSanitizer and MemorySanitizer flags
+SANITIZER_FLAGS = -fsanitize=address -fsanitize=memory
 
+all: sqlite3
+# Add sanitizer flags to the build command for sqlite3
 sqlite3: shell.c sqlite3.c
-	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
+	$(CC) $(CFLAGS) $(SANITIZER_FLAGS) $^ $(LIBS) -o $@
 
 coverage-html:
 	gcovr --html --html-details -o coverage_report.html

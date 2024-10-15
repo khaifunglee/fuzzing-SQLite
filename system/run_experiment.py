@@ -94,6 +94,15 @@ class Experiment:
         else:
             print(f"File '{file_path}' does not exist.")
 
+    def log_bug(self, sqlcmd, error_output):
+        """Logs SQL input and error output to 'bug_inputs' file."""
+        with open("bug_inputs.txt", "a") as bug_file:
+            bug_file.write("SQL Input:\n")
+            bug_file.write(sqlcmd + "\n")
+            bug_file.write("Error Output:\n")
+            bug_file.write(error_output + "\n")
+            bug_file.write("="*40 + "\n")  # Separator between entries
+
     def run(self, sqlcmd):
         if self.clean_database:
             remove_file_if_exists(self.db_file)
@@ -101,8 +110,22 @@ class Experiment:
         # Replace NULL bytes to prevent ValueError exceptions
         sqlcmd = sqlcmd.replace('\x00', '_')
         command = f'echo "{sqlcmd}" | {self.sqlite3} {self.db_file}'
+
+        # Capture stdout and stderr to detect sanitizer errors
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output, error = process.communicate()
+
+        # Log and record input & error (if error occurred), record it in a 'bugs_inputs' file
+        # Check for ASan/MSan error patterns in stderr
+        if error:
+            if b'ERROR: AddressSanitizer' in error or b'ERROR: MemorySanitizer' in error:
+                print(f'[BUG FOUND] Memory issue detected by sanitizer:\n{error.decode()}')
+
+            print("ERROR FOUND TEST MESSAGE")
+            
+            error_output = error.decode('utf-8')
+            print(f"[ERROR] Error found in the program with input:\n{sqlcmd}")
+            self.log_bug(sqlcmd, error_output)
 
 
     def get_coverage(self):
