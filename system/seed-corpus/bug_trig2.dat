@@ -1,0 +1,8 @@
+CREATE TABLE cte_test (value INT);
+INSERT INTO cte_test (value) VALUES (1);
+WITH RECURSIVE cte(x) AS (
+    SELECT value FROM cte_test
+    UNION ALL
+    SELECT x + 1 FROM cte WHERE x < 1000000
+)
+SELECT x FROM cte WHERE x < 10;

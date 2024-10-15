@@ -1,0 +1,3 @@
+CREATE TABLE your_table (id INT, your_condition TEXT);
+INSERT INTO your_table (id, your_condition) VALUES (1, 'condition1'), (2, 'condition2');
+SELECT * FROM (SELECT COUNT(*) FROM your_table WHERE id IN (SELECT id FROM your_table WHERE your_condition = 'condition1')) HAVING 0;

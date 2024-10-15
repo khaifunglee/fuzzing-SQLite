@@ -1,0 +1,4 @@
+CREATE TABLE sum_test (a INT, b INT);
+INSERT INTO sum_test (a, b) VALUES (1, 2);
+SELECT sum(1) OVER (ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) 
+FROM (SELECT a AS x, b AS y FROM sum_test, sum_test AS b ORDER BY x LIMIT 1);
