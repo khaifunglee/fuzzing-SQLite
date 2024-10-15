@@ -4,8 +4,6 @@
 # That is, your entire implementation must be in `grammar.py`
 # and `fuzzer.py`.
 
-
-
 grammar = {
     "<start>":["<statements>"],
     "<statements>":["<statement>;","<statements> <statement>;"],
