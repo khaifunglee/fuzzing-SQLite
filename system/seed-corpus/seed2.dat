@@ -1,28 +1,28 @@
--- 创建另一个包含不同数据类型的表
+-- Create a table that includes different data types
 CREATE TABLE department (dept_id INTEGER PRIMARY KEY, dept_name TEXT, location TEXT, budget DECIMAL);
 
--- 插入多条数据到 department 表中
+-- Insert rows of data to Table department
 INSERT INTO department (dept_name, location, budget) VALUES ('HR', 'New York', 50000.75), ('IT', 'San Francisco', 120000.00), ('Finance', 'Chicago', 75000.50);
 
--- 带有GROUP BY和聚合函数的复杂查询
+-- Query by GROUPBY and AGGREGATE
 SELECT dept_name, COUNT(*) AS employee_count, SUM(budget) AS total_budget
 FROM department
 GROUP BY dept_name
 HAVING total_budget > 60000;
 
--- 查询每个部门中最高薪资的员工信息
+-- Query the information of employee who has the highest salary in each department
 CREATE TABLE employees (emp_id INTEGER PRIMARY KEY, emp_name TEXT, dept_id INTEGER, salary INTEGER);
 INSERT INTO employees (emp_name, dept_id, salary) VALUES ('John', 1, 55000), ('Jane', 2, 130000), ('Doe', 3, 80000);
 SELECT emp_name, salary
 FROM employees
 WHERE salary = (SELECT MAX(salary) FROM employees WHERE dept_id = employees.dept_id);
 
--- 嵌套子查询：查找薪资高于部门平均薪资的员工
+-- Nested query: Find the employee whose salary is higher than department average
 SELECT emp_name, salary
 FROM employees e
 WHERE salary > (SELECT AVG(salary) FROM employees WHERE dept_id = e.dept_id);
 
--- 使用CASE表达式分类员工薪资
+-- Use CASE to categorise employee salary
 SELECT emp_name, 
 CASE
     WHEN salary > 100000 THEN 'High Salary'
@@ -31,7 +31,7 @@ CASE
 END AS salary_category
 FROM employees;
 
--- 使用JOIN和UNION查询
+-- Use JOIN and UNION to query
 SELECT e.emp_name, d.dept_name
 FROM employees e
 JOIN department d ON e.dept_id = d.dept_id
@@ -39,12 +39,12 @@ UNION
 SELECT 'Total', COUNT(*) 
 FROM employees;
 
--- 带有窗口函数的查询：查询每个部门员工薪资排名
+-- Query the salary ranking of employees in each department
 SELECT emp_name, salary,
 RANK() OVER (PARTITION BY dept_id ORDER BY salary DESC) AS salary_rank
 FROM employees;
 
--- 使用递归查询查找管理层级
+-- Use recursion to query management hierarchy
 WITH RECURSIVE EmployeeHierarchy AS (
     SELECT emp_id, dept_id, 1 AS level
     FROM employees
