@@ -1,0 +1,9 @@
+CREATE TABLE aggregate_test (id INTEGER PRIMARY KEY, category TEXT, value INTEGER);
+INSERT INTO aggregate_test (category, value) VALUES ('A', 10), ('A', 20), ('B', 30), ('B', 40), ('C', 50);
+
+SELECT category, COUNT(*) AS count, SUM(value) AS total_value, AVG(value) AS avg_value
+FROM aggregate_test
+GROUP BY category
+HAVING total_value > 30;
+
+SELECT MIN(value), MAX(value), COUNT(value), SUM(value) FROM aggregate_test GROUP BY category;

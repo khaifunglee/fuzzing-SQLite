@@ -1,0 +1,7 @@
+CREATE TABLE btree_test (id INTEGER PRIMARY KEY, key INTEGER, value TEXT);
+INSERT INTO btree_test (key, value) VALUES (100, 'Value 100'), (200, 'Value 200'), (300, 'Value 300');
+
+CREATE INDEX idx_key ON btree_test (key);
+SELECT * FROM btree_test ORDER BY key DESC;
+INSERT INTO btree_test SELECT abs(random()), hex(randomblob(10)) FROM generate_series(1, 1000);
+SELECT * FROM btree_test WHERE key > 500 ORDER BY key ASC;

@@ -1,0 +1,6 @@
+
+CREATE TABLE ptrmap_test (id INTEGER PRIMARY KEY, ref_id INTEGER, content TEXT);
+INSERT INTO ptrmap_test (ref_id, content) VALUES (1, 'Ref A'), (2, 'Ref B'), (3, 'Ref C');
+
+
+SELECT * FROM ptrmap_test WHERE ref_id IN (SELECT ref_id FROM ptrmap_test WHERE content LIKE 'Ref%');

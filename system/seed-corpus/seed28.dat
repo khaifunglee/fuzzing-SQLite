@@ -1,0 +1,8 @@
+
+CREATE TABLE real_value_test (id INTEGER PRIMARY KEY, real_value REAL);
+INSERT INTO real_value_test (real_value) VALUES (3.14), (1.618), (2.718);
+
+
+SELECT id, real_value, real_value * 2.0 AS double_value FROM real_value_test WHERE real_value > 2.0;
+SELECT id, real_value, real_value / 1.5 AS adjusted_value FROM real_value_test WHERE real_value < 3.0;
+SELECT id, CAST(real_value AS INTEGER) AS integer_value FROM real_value_test;

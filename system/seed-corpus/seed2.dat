@@ -1,0 +1,59 @@
+-- 创建另一个包含不同数据类型的表
+CREATE TABLE department (dept_id INTEGER PRIMARY KEY, dept_name TEXT, location TEXT, budget DECIMAL);
+
+-- 插入多条数据到 department 表中
+INSERT INTO department (dept_name, location, budget) VALUES ('HR', 'New York', 50000.75), ('IT', 'San Francisco', 120000.00), ('Finance', 'Chicago', 75000.50);
+
+-- 带有GROUP BY和聚合函数的复杂查询
+SELECT dept_name, COUNT(*) AS employee_count, SUM(budget) AS total_budget
+FROM department
+GROUP BY dept_name
+HAVING total_budget > 60000;
+
+-- 查询每个部门中最高薪资的员工信息
+CREATE TABLE employees (emp_id INTEGER PRIMARY KEY, emp_name TEXT, dept_id INTEGER, salary INTEGER);
+INSERT INTO employees (emp_name, dept_id, salary) VALUES ('John', 1, 55000), ('Jane', 2, 130000), ('Doe', 3, 80000);
+SELECT emp_name, salary
+FROM employees
+WHERE salary = (SELECT MAX(salary) FROM employees WHERE dept_id = employees.dept_id);
+
+-- 嵌套子查询：查找薪资高于部门平均薪资的员工
+SELECT emp_name, salary
+FROM employees e
+WHERE salary > (SELECT AVG(salary) FROM employees WHERE dept_id = e.dept_id);
+
+-- 使用CASE表达式分类员工薪资
+SELECT emp_name, 
+CASE
+    WHEN salary > 100000 THEN 'High Salary'
+    WHEN salary BETWEEN 60000 AND 100000 THEN 'Medium Salary'
+    ELSE 'Low Salary'
+END AS salary_category
+FROM employees;
+
+-- 使用JOIN和UNION查询
+SELECT e.emp_name, d.dept_name
+FROM employees e
+JOIN department d ON e.dept_id = d.dept_id
+UNION
+SELECT 'Total', COUNT(*) 
+FROM employees;
+
+-- 带有窗口函数的查询：查询每个部门员工薪资排名
+SELECT emp_name, salary,
+RANK() OVER (PARTITION BY dept_id ORDER BY salary DESC) AS salary_rank
+FROM employees;
+
+-- 使用递归查询查找管理层级
+WITH RECURSIVE EmployeeHierarchy AS (
+    SELECT emp_id, dept_id, 1 AS level
+    FROM employees
+    WHERE dept_id IS NULL
+    UNION ALL
+    SELECT e.emp_id, e.dept_id, eh.level + 1
+    FROM employees e
+    INNER JOIN EmployeeHierarchy eh ON e.dept_id = eh.emp_id
+)
+SELECT emp_id, dept_id, level
+FROM EmployeeHierarchy
+ORDER BY level, emp_id;

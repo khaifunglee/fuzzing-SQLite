@@ -1,0 +1,20 @@
+CREATE TABLE events (
+    event_id SERIAL PRIMARY KEY,
+    event_name TEXT,
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+    location TEXT
+);
+
+INSERT INTO events (event_name, start_time, end_time, location) VALUES
+('Event A', '2023-06-01 10:00:00', '2023-06-01 12:00:00', 'New York'),
+('Event B', '2023-07-15 09:00:00', '2023-07-15 17:00:00', 'San Francisco'),
+('Event C', '2023-08-20 13:00:00', '2023-08-20 15:30:00', 'Chicago');
+
+SELECT event_name, location, 
+EXTRACT(HOUR FROM end_time - start_time) AS event_duration_hours,
+AGE(start_time, end_time) AS time_diff,
+NOW() AS current_time,
+start_time + INTERVAL '1 hour' AS adjusted_start_time
+FROM events
+WHERE end_time > NOW() - INTERVAL '1 day';

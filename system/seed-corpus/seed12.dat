@@ -1,0 +1,24 @@
+CREATE TABLE orders (
+    order_id INTEGER PRIMARY KEY,
+    customer_id INTEGER,
+    items TEXT[],  
+    order_info JSON,  
+    order_date DATE,
+    total_amount DECIMAL
+);
+
+INSERT INTO orders (customer_id, items, order_info, order_date, total_amount) VALUES
+(1, ARRAY['item1', 'item2'], '{"status": "shipped", "tracking": "12345XYZ"}', '2023-01-15', 150.50),
+(2, ARRAY['item3', 'item4', 'item5'], '{"status": "pending"}', '2023-02-20', 250.00),
+(3, ARRAY['item6'], '{"status": "delivered", "review": "good"}', '2023-03-25', 75.00);
+
+SELECT order_id, customer_id, total_amount,
+CASE 
+    WHEN order_info->>'status' = 'shipped' THEN 'In Transit'
+    WHEN order_info->>'status' = 'delivered' THEN 'Completed'
+    ELSE 'Processing'
+END AS order_status,
+ARRAY_LENGTH(items, 1) AS num_items
+FROM orders
+WHERE total_amount > 100
+ORDER BY order_date DESC;

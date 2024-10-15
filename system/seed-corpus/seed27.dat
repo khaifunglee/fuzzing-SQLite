@@ -1,0 +1,7 @@
+
+CREATE TABLE instr_test (id INTEGER PRIMARY KEY, text_value TEXT);
+INSERT INTO instr_test (text_value) VALUES ('abcdef'), ('ghijkl'), ('mnopqr');
+
+SELECT id, text_value, INSTR(text_value, 'a') AS position_a FROM instr_test WHERE INSTR(text_value, 'a') > 0;
+SELECT INSTR('abcdef', 'c') AS position_c, INSTR('ghijkl', 'g') AS position_g;
+SELECT id, text_value FROM instr_test WHERE INSTR(text_value, 'k') = 5;

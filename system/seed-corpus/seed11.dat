@@ -1,0 +1,15 @@
+SELECT department, 
+SUM(salary) AS total_salary,
+COUNT(*) AS employee_count,
+AVG(salary) AS avg_salary
+FROM employees
+GROUP BY ROLLUP(department)
+ORDER BY department DESC;
+
+SELECT department, 
+SUM(salary) AS total_salary,
+COUNT(*) AS employee_count,
+AVG(salary) AS avg_salary
+FROM employees
+GROUP BY CUBE(department)
+ORDER BY department DESC;

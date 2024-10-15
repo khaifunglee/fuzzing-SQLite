@@ -1,0 +1,28 @@
+CREATE TABLE org_chart (
+    emp_id INTEGER PRIMARY KEY,
+    emp_name TEXT,
+    manager_id INTEGER,
+    position TEXT
+);
+
+INSERT INTO org_chart (emp_id, emp_name, manager_id, position) VALUES
+(1, 'CEO', NULL, 'Chief Executive Officer'),
+(2, 'CTO', 1, 'Chief Technology Officer'),
+(3, 'CFO', 1, 'Chief Financial Officer'),
+(4, 'Dev Manager', 2, 'Development Manager'),
+(5, 'Finance Manager', 3, 'Finance Manager'),
+(6, 'Developer', 4, 'Software Developer'),
+(7, 'Accountant', 5, 'Accountant');
+
+WITH RECURSIVE OrgHierarchy AS (
+    SELECT emp_id, emp_name, position, manager_id, 1 AS level
+    FROM org_chart
+    WHERE manager_id IS NULL
+    UNION ALL
+    SELECT o.emp_id, o.emp_name, o.position, o.manager_id, oh.level + 1
+    FROM org_chart o
+    JOIN OrgHierarchy oh ON o.manager_id = oh.emp_id
+)
+SELECT emp_id, emp_name, position, level
+FROM OrgHierarchy
+ORDER BY level, emp_id;

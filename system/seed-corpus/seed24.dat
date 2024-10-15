@@ -1,0 +1,8 @@
+CREATE TABLE deferred_seek_test (id INTEGER PRIMARY KEY, key1 INTEGER, key2 INTEGER, value TEXT);
+CREATE INDEX idx_key1 ON deferred_seek_test (key1);
+CREATE INDEX idx_key2 ON deferred_seek_test (key2);
+
+INSERT INTO deferred_seek_test (key1, key2, value) VALUES (1, 100, 'Value A'), (2, 200, 'Value B'), (3, 300, 'Value C');
+
+SELECT * FROM deferred_seek_test WHERE key1 = 1 AND key2 > 100;
+SELECT * FROM deferred_seek_test WHERE key2 IN (SELECT key2 FROM deferred_seek_test WHERE key1 = 2);

@@ -1,0 +1,12 @@
+INSERT INTO employees (emp_name, department, salary)
+SELECT emp_name, 'IT', salary * 1.2
+FROM employees
+WHERE department = 'HR';
+
+DELETE FROM employees
+WHERE emp_id IN (
+    SELECT emp_id
+    FROM employees
+    WHERE salary < (SELECT AVG(salary) FROM employees)
+);
+SELECT * FROM employees ORDER BY salary DESC;

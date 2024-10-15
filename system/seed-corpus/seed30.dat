@@ -1,0 +1,14 @@
+
+PRAGMA journal_mode = WAL;
+CREATE TABLE wal_test (id INTEGER PRIMARY KEY, content TEXT);
+INSERT INTO wal_test (content) VALUES ('Test 1'), ('Test 2'), ('Test 3');
+
+
+BEGIN;
+INSERT INTO wal_test (content) VALUES ('Test 4');
+UPDATE wal_test SET content = 'Updated Test' WHERE content = 'Test 1';
+DELETE FROM wal_test WHERE content = 'Test 3';
+COMMIT;
+
+PRAGMA wal_checkpoint(FULL);
+SELECT * FROM wal_test;
