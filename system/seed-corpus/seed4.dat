@@ -1,0 +1,16 @@
+WITH DepartmentSummary AS (
+    SELECT department, AVG(salary) AS avg_salary, COUNT(*) AS num_employees
+    FROM employees
+    GROUP BY department
+),
+EmployeeRankings AS (
+    SELECT emp_name, department, salary,
+    RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS salary_rank
+    FROM employees
+)
+SELECT e.emp_name, e.salary, ds.avg_salary, ds.num_employees, er.salary_rank
+FROM employees e
+JOIN DepartmentSummary ds ON e.department = ds.department
+JOIN EmployeeRankings er ON e.emp_name = er.emp_name
+WHERE e.salary > (SELECT AVG(salary) FROM employees WHERE department = e.department)
+ORDER BY e.salary DESC;

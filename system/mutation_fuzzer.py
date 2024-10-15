@@ -5,9 +5,11 @@
 # "Mutation-Based Fuzzing" - a chapter of "The Fuzzing Book"
 # Web site: https://www.fuzzingbook.org/html/MutationFuzzer.html
 
-import random
-from typing import Tuple, List, Callable, Set, Any
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+import random
+from typing import List
 from fuzzingbook.Fuzzer import Fuzzer
 
 # List of mutation operators
@@ -17,17 +19,15 @@ def delete_random_character(s: str) -> str:
         return s
 
     pos = random.randint(0, len(s) - 1)
-    # print("Deleting", repr(s[pos]), "at", pos)
     return s[:pos] + s[pos + 1:]
 
 def insert_random_character(s: str) -> str:
     """Returns s with a random character inserted"""
     pos = random.randint(0, len(s))
     random_character = chr(random.randrange(32, 127))
-    # print("Inserting", repr(random_character), "at", pos)
     return s[:pos] + random_character + s[pos:]
 
-def flip_random_character(s):
+def flip_random_character(s: str) -> str:
     """Returns s with a random bit flipped in a random position"""
     if s == "":
         return s
@@ -36,8 +36,35 @@ def flip_random_character(s):
     c = s[pos]
     bit = 1 << random.randint(0, 6)
     new_c = chr(ord(c) ^ bit)
-    # print("Flipping", bit, "in", repr(c) + ", giving", repr(new_c))
     return s[:pos] + new_c + s[pos + 1:]
+
+# New mutation operators
+def swap_two_characters(s: str) -> str:
+    """Swaps two random characters in the string"""
+    if len(s) < 2:
+        return s
+
+    pos1, pos2 = random.sample(range(len(s)), 2)
+    s_list = list(s)
+    s_list[pos1], s_list[pos2] = s_list[pos2], s_list[pos1]
+    return ''.join(s_list)
+
+def duplicate_random_character(s: str) -> str:
+    """Duplicates a random character in the string"""
+    if s == "":
+        return s
+
+    pos = random.randint(0, len(s) - 1)
+    return s[:pos] + s[pos] + s[pos + 1:]
+
+def remove_random_substring(s: str, min_len: int = 2, max_len: int = 5) -> str:
+    """Removes a random substring of length between min_len and max_len"""
+    if len(s) <= min_len:
+        return s
+
+    length = random.randint(min_len, min(max_len, len(s)))
+    start_pos = random.randint(0, len(s) - length)
+    return s[:start_pos] + s[start_pos + length:]
 
 class MyMutationFuzzer(Fuzzer):
     """Base class for mutational fuzzing"""
@@ -64,9 +91,12 @@ class MyMutationFuzzer(Fuzzer):
     def mutate(self, inp: str) -> str:
         """Return s with a random mutation applied"""
         mutators = [
-	   delete_random_character,
-	   insert_random_character,
-	   flip_random_character
+            delete_random_character,
+            insert_random_character,
+            flip_random_character,
+            swap_two_characters,        # New mutation operator 1
+            duplicate_random_character, # New mutation operator 2
+            remove_random_substring     # New mutation operator 3
         ]
         mutator = random.choice(mutators)
         return mutator(inp)
@@ -75,13 +105,13 @@ class MyMutationFuzzer(Fuzzer):
         """Create a new candidate by mutating a population member"""
         candidate = random.choice(self.population)
         trials = random.randint(self.min_mutations, self.max_mutations)
-        for i in range(trials):
+        for _ in range(trials):
             candidate = self.mutate(candidate)
         return candidate
 
     def add_seed(self, seed: str) -> None:
         self.population.append(seed)
-        print("new seed has been added to the corpus")
+        print("New seed has been added to the corpus")
 
     def fuzz(self) -> str:
         if self.seed_index < len(self.seed):

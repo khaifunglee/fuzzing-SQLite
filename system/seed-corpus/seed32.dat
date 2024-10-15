@@ -1,0 +1,8 @@
+
+CREATE TABLE btree_prev_test (id INTEGER PRIMARY KEY, value INTEGER);
+INSERT INTO btree_prev_test (value) VALUES (10), (20), (30), (40), (50);
+
+
+SELECT * FROM btree_prev_test ORDER BY value DESC;
+SELECT * FROM btree_prev_test WHERE value <= 30 ORDER BY value DESC;
+SELECT value, (SELECT MAX(value) FROM btree_prev_test WHERE value < 40) AS previous_value FROM btree_prev_test;

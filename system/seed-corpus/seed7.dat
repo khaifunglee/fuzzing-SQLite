@@ -1,0 +1,19 @@
+CREATE TABLE audit_log (
+    audit_id INTEGER PRIMARY KEY,
+    emp_id INTEGER,
+    change_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    action TEXT,
+    old_salary INTEGER,
+    new_salary INTEGER
+);
+
+CREATE TRIGGER employee_salary_update
+AFTER UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    INSERT INTO audit_log (emp_id, action, old_salary, new_salary)
+    VALUES (OLD.emp_id, 'Salary Update', OLD.salary, NEW.salary);
+END;
+
+UPDATE employees SET salary = salary * 1.10 WHERE department = 'Finance';
+SELECT * FROM audit_log;

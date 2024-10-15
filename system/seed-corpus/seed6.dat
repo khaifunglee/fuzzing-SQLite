@@ -1,0 +1,9 @@
+SELECT emp_name, department, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees WHERE department = 'IT')
+UNION
+SELECT dept_name AS emp_name, location AS department, MAX(budget) AS salary
+FROM departments d
+JOIN projects p ON d.dept_name = p.proj_name
+GROUP BY dept_name, location
+HAVING MAX(budget) > 150000;

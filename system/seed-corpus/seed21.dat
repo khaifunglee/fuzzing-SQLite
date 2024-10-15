@@ -1,0 +1,10 @@
+CREATE VIRTUAL TABLE IF NOT EXISTS vtable USING fts5(content, tokenize = 'porter');
+INSERT INTO vtable (content) VALUES ('This is a test'), ('Another test'), ('Virtual table test with fts5');
+
+BEGIN;
+INSERT INTO vtable (content) VALUES ('Inserting into virtual table');
+UPDATE vtable SET content = 'Updated content' WHERE content LIKE 'Another%';
+DELETE FROM vtable WHERE content = 'This is a test';
+COMMIT;
+
+SELECT * FROM vtable WHERE content MATCH 'Virtual';

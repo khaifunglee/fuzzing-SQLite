@@ -1,0 +1,13 @@
+SELECT department,
+COUNT(*) AS total_employees,
+SUM(CASE WHEN salary >= 50000 THEN 1 ELSE 0 END) AS above_50k,
+SUM(CASE WHEN salary >= 100000 THEN 1 ELSE 0 END) AS above_100k,
+ROUND(AVG(salary), 2) AS average_salary,
+CASE 
+    WHEN AVG(salary) > 80000 THEN 'High Salary'
+    WHEN AVG(salary) BETWEEN 50000 AND 80000 THEN 'Medium Salary'
+    ELSE 'Low Salary'
+END AS salary_category
+FROM employees
+GROUP BY department
+HAVING COUNT(*) > 3;

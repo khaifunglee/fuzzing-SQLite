@@ -1,0 +1,24 @@
+
+CREATE TABLE user_profiles (
+    user_id SERIAL PRIMARY KEY,
+    username TEXT,
+    profile JSON
+);
+
+INSERT INTO user_profiles (username, profile) VALUES 
+('john_doe', '{"age": 30, "address": {"city": "New York", "zip": "10001"}, "skills": ["SQL", "Python", "Data Analysis"]}'),
+('jane_smith', '{"age": 25, "address": {"city": "San Francisco", "zip": "94101"}, "skills": ["Java", "Machine Learning", "Web Development"]}'),
+('sam_jones', '{"age": 35, "address": {"city": "Chicago", "zip": "60601"}, "skills": ["Project Management", "Team Leadership"]}');
+
+
+SELECT username,
+profile->>'age' AS age,
+profile->'address'->>'city' AS city,
+json_array_length(profile->'skills') AS num_skills
+FROM user_profiles
+WHERE profile->>'age' > '30';
+
+
+UPDATE user_profiles
+SET profile = jsonb_set(profile, '{address,city}', '"Los Angeles"')
+WHERE username = 'john_doe';

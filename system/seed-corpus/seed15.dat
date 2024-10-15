@@ -1,0 +1,34 @@
+
+CREATE TABLE sales (
+    sale_id SERIAL PRIMARY KEY,
+    product_name TEXT,
+    quantity INTEGER,
+    sale_date DATE,
+    revenue DECIMAL
+);
+
+CREATE INDEX idx_product_name ON sales (product_name);
+CREATE INDEX idx_sale_date ON sales (sale_date);
+
+
+CREATE VIEW product_sales_summary AS
+SELECT product_name, SUM(quantity) AS total_quantity, SUM(revenue) AS total_revenue
+FROM sales
+GROUP BY product_name;
+
+CREATE TABLE total_sales (
+    product_name TEXT PRIMARY KEY,
+    total_revenue DECIMAL DEFAULT 0
+);
+
+CREATE TRIGGER update_total_sales
+AFTER INSERT ON sales
+FOR EACH ROW
+BEGIN
+    INSERT INTO total_sales (product_name, total_revenue)
+    VALUES (NEW.product_name, NEW.revenue)
+    ON CONFLICT (product_name) DO UPDATE SET total_revenue = total_sales.total_revenue + NEW.revenue;
+END;
+
+-- 使用视图进行查询
+SELECT * FROM product_sales_summary;

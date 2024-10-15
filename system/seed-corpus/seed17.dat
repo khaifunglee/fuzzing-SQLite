@@ -1,0 +1,24 @@
+
+CREATE TABLE employee_salaries (
+    emp_id SERIAL PRIMARY KEY,
+    emp_name TEXT,
+    department TEXT,
+    base_salary DECIMAL,
+    bonus DECIMAL
+) PARTITION BY RANGE (base_salary);
+
+CREATE TABLE employee_salaries_low PARTITION OF employee_salaries FOR VALUES FROM (0) TO (50000);
+CREATE TABLE employee_salaries_mid PARTITION OF employee_salaries FOR VALUES FROM (50000) TO (100000);
+CREATE TABLE employee_salaries_high PARTITION OF employee_salaries FOR VALUES FROM (100000) TO (MAXVALUE);
+
+INSERT INTO employee_salaries (emp_name, department, base_salary, bonus) VALUES
+('Alice', 'HR', 45000, 5000),
+('Bob', 'IT', 80000, 7000),
+('Charlie', 'Finance', 120000, 15000);
+
+
+SELECT emp_name, department, base_salary, bonus,
+(base_salary + bonus) AS total_compensation,
+STDDEV(base_salary) OVER (PARTITION BY department) AS salary_stddev
+FROM employee_salaries
+ORDER BY total_compensation DESC;

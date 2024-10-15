@@ -1,0 +1,12 @@
+ATTACH DATABASE 'test_db1.db' AS db1;
+ATTACH DATABASE 'test_db2.db' AS db2;
+
+CREATE TABLE db1.table1 (id INTEGER PRIMARY KEY, name TEXT);
+CREATE TABLE db2.table2 (id INTEGER PRIMARY KEY, description TEXT);
+
+INSERT INTO db1.table1 (name) VALUES ('Alice'), ('Bob');
+INSERT INTO db2.table2 (description) VALUES ('Description1'), ('Description2');
+
+SELECT db1.table1.name, db2.table2.description FROM db1.table1 JOIN db2.table2 ON db1.table1.id = db2.table2.id;
+DETACH DATABASE db1;
+DETACH DATABASE db2;
