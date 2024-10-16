@@ -93,16 +93,16 @@ class Experiment:
                 print(f"An error occurred while removing file '{file_path}': {e}")
         else:
             print(f"File '{file_path}' does not exist.")
-
+    """
     def log_bug(self, sqlcmd, error_output):
-        """Logs SQL input and error output to 'bug_inputs' file."""
+        Logs SQL input and error output to 'bug_inputs' file.
         with open("bug_inputs.txt", "a") as bug_file:
             bug_file.write("SQL Input:\n")
             bug_file.write(sqlcmd + "\n")
             bug_file.write("Error Output:\n")
             bug_file.write(error_output + "\n")
             bug_file.write("="*40 + "\n")  # Separator between entries
-
+    """
     def run(self, sqlcmd):
         if self.clean_database:
             remove_file_if_exists(self.db_file)
@@ -111,21 +111,30 @@ class Experiment:
         sqlcmd = sqlcmd.replace('\x00', '_')
         command = f'echo "{sqlcmd}" | {self.sqlite3} {self.db_file}'
 
-        # Capture stdout and stderr to detect sanitizer errors
-        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = process.communicate()
 
         # Log and record input & error (if error occurred), record it in a 'bugs_inputs' file
-        # Check for ASan/MSan error patterns in stderr
         if error:
-            if b'ERROR: AddressSanitizer' in output or b'ERROR: MemorySanitizer' in output:
-                print(f'[BUG FOUND] Memory issue detected by sanitizer:\n{error.decode()}')
+            print("Error detected...")
+            print(sqlcmd)
+            print(output)
+            print(error)
+            # Only capture memory-related errors
+            critical_errors = [
+            b'AddressSanitizer',    # General ASan errors
+            b'stack-overflow',      # Stack overflow
+            b'heap-buffer-overflow',# Heap buffer overflow
+            b'stack-buffer-overflow',# Stack buffer overflow
+            b'use-after-free',      # Use-after-free
+            b'Null pointer dereference' # Null pointer dereference
+            ]
 
-            print("ERROR FOUND TEST MESSAGE")
-            
-            error_output = error.decode('utf-8')
-            print(f"[ERROR] Error found in the program with input:\n{sqlcmd}")
-            self.log_bug(sqlcmd, error_output)
+            # Log only if the error matches any critical memory faults
+            if any(crit_err in error for crit_err in critical_errors):
+                print("Critical memory fault detected.")
+                with open('bug_inputs.txt', 'a') as f:
+                    f.write(f'Input: {sqlcmd}\nError: {error.decode("utf-8")}\n\n')
 
 
     def get_coverage(self):
