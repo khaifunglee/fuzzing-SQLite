@@ -79,7 +79,7 @@ grammar = {
 
 
     "<select_stmt>": ["SELECT <select_list> FROM <table_references> WHERE <condition>;"],
-    "<begin_transaction>":["BRGIN [TRANSACTION]"],
+    "<begin_transaction>":["BEGIN [TRANSACTION]"],
     "<commit>":["COMMIT [TRANSACTION"],
     "<rollback>":["ROLLBACK [TRANSACTION]"],
     "<explain_stmt>": ["EXPLAIN <sql_stmt>", "EXPLAIN QUERY PLAN <sql_stmt>"],
@@ -195,17 +195,17 @@ grammar = {
       "<char>", "<char><anything_except_*/>"],
   
    
-    "<expr>": ["<literal>", "<identifier>", "<expr> <operator> <expr>"],
+    "<expr>": ["NULL", "<literal>", "<identifier>", "<expr> <operator> <expr>"], # added NULL value (null pointer dereference)
 
     "<indexed_columns>": ["<column_name>", "<column_name>, <indexed_columns>"],
     "<columns>": ["<column_name>", "<column_name>, <columns>"],
     "<column_name>": ["<identifier>"],
     "<column_names>": ["<string>", "<string>, <column_names>"],
-    "<values>": ["<value>", "<value>, <values>"],
+    "<values>": ["<value>", "<value>, <values>", "'A' * 1000000", "'B' * 5000000", "999999999999999999999999999999", "-999999999999999999999999999999"], # added large string & values (buffer overflow)
     "<assignments>":["<assignment>","<assignments>,<assignment>"],
     "<assignment>":["<column_name>=<value>"],
     "<value>": ["<literal>", "'<function_call>'"],
-    "<literal>":["<number>","'<string>'","NULL"],
+    "<literal>":["<number>","'<string>'","NULL"], # added NULL value (null pointer dereference)
    
     "<pragma_name>": ["cache_size", "encoding", "foreign_keys", "journal_mode", "locking_mode", "synchronous"], 
     "<pragma_value>": ["<signed_number>", "<name>", "<signed_literal>"],
@@ -217,7 +217,7 @@ grammar = {
     # "<filename>": ["'<string>'"],
 
     "<condition>": ["<expression>"],
-    "<expression>":["<value>","expression><operator><expression>","(<expression>)"],
+    "<expression>":["NULL", "<value>","expression><operator><expression>","(<expression>)"],
     "<operator>":["+","-","*","/","%","AND","OR","=","!=","<","<=",">",">="],
     "<select_list>":["*","<columns>"],
     "<table_references>":["<table_name>","<table_references>,<table_name>","<table_references> JOIN <table_name> ON <condition>"],
