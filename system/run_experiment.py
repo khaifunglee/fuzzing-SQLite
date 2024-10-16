@@ -118,7 +118,7 @@ class Experiment:
         # Log and record input & error (if error occurred), record it in a 'bugs_inputs' file
         # Check for ASan/MSan error patterns in stderr
         if error:
-            if b'ERROR: AddressSanitizer' in error or b'ERROR: MemorySanitizer' in error:
+            if b'ERROR: AddressSanitizer' in output or b'ERROR: MemorySanitizer' in output:
                 print(f'[BUG FOUND] Memory issue detected by sanitizer:\n{error.decode()}')
 
             print("ERROR FOUND TEST MESSAGE")

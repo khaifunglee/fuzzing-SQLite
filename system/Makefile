@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -fprofile-arcs -ftest-coverage -g -01 # -g (debug flag) and -01 (optimization flag)
+CFLAGS = -fprofile-arcs -ftest-coverage -g -O1 # -g (debug flag) and -O1 (optimization flag)
 LIBS = -lpthread -ldl -lm
 
 # Add AddressSanitizer and MemorySanitizer flags
-SANITIZER_FLAGS = -fsanitize=address -fsanitize=memory
+SANITIZER_FLAGS = -fsanitize=memory
 
 all: sqlite3
 # Add sanitizer flags to the build command for sqlite3
