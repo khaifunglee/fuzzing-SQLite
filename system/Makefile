@@ -11,7 +11,7 @@ sqlite3: shell.c sqlite3.c
 	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
 
 coverage-html:
-	gcovr --html --html-details -o coverage_report.htmla
+	gcovr --html --html-details -o coverage_report.html
 
 coverage-csv:
 	gcovr --csv --branches --exclude-unreachable-branches -o coverage_report.csv
