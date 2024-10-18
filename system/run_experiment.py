@@ -93,16 +93,7 @@ class Experiment:
                 print(f"An error occurred while removing file '{file_path}': {e}")
         else:
             print(f"File '{file_path}' does not exist.")
-    """
-    def log_bug(self, sqlcmd, error_output):
-        Logs SQL input and error output to 'bug_inputs' file.
-        with open("bug_inputs.txt", "a") as bug_file:
-            bug_file.write("SQL Input:\n")
-            bug_file.write(sqlcmd + "\n")
-            bug_file.write("Error Output:\n")
-            bug_file.write(error_output + "\n")
-            bug_file.write("="*40 + "\n")  # Separator between entries
-    """
+
     def run(self, sqlcmd):
         if self.clean_database:
             remove_file_if_exists(self.db_file)
@@ -113,28 +104,6 @@ class Experiment:
 
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output, error = process.communicate()
-
-        # Log and record input & error (if error occurred), record it in a 'bugs_inputs' file
-        if error:
-            print("Error detected...")
-            print(sqlcmd)
-            print(output)
-            print(error)
-            # Only capture memory-related errors
-            critical_errors = [
-            b'AddressSanitizer',    # General ASan errors
-            b'stack-overflow',      # Stack overflow
-            b'heap-buffer-overflow',# Heap buffer overflow
-            b'stack-buffer-overflow',# Stack buffer overflow
-            b'use-after-free',      # Use-after-free
-            b'Null pointer dereference' # Null pointer dereference
-            ]
-
-            # Log only if the error matches any critical memory faults
-            if any(crit_err in error for crit_err in critical_errors):
-                print("Critical memory fault detected.")
-                with open('bug_inputs.txt', 'a') as f:
-                    f.write(f'Input: {sqlcmd}\nError: {error.decode("utf-8")}\n\n')
 
 
     def get_coverage(self):
