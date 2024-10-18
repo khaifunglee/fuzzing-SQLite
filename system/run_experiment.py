@@ -111,7 +111,7 @@ class Experiment:
         sqlcmd = sqlcmd.replace('\x00', '_')
         command = f'echo "{sqlcmd}" | {self.sqlite3} {self.db_file}'
 
-        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output, error = process.communicate()
 
         # Log and record input & error (if error occurred), record it in a 'bugs_inputs' file

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -fprofile-arcs -ftest-coverage -fsanitize=address -O1 # -O1 (optimization flag)
+CFLAGS = -fprofile-arcs -ftest-coverage # -fsanitize=address -O1 (optimization flag)
 LIBS = -lpthread -ldl -lm
 
 # Add AddressSanitizer and MemorySanitizer flags
